@@ -17,8 +17,8 @@ Jeweler::Tasks.new do |gem|
   gem.name = "imperator-ext"
   gem.homepage = "http://github.com/kristianmandrup/imperator-ext"
   gem.license = "MIT"
-  gem.summary = %Q{Extensions to Imperator for use with Focused Controller and Mongoid}
-  gem.description = %Q{}
+  gem.summary = %Q{Various extensions for Imperator}
+  gem.description = %Q{Factories, Macros, REST helpers and Mongoid integration}
   gem.email = "kmandrup@gmail.com"
   gem.authors = ["Kristian Mandrup"]
   # dependencies defined in Gemfile
