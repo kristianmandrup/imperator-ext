@@ -2,7 +2,6 @@ source :rubygems
 
 gem 'virtus', :git => 'git://github.com/kristianmandrup/virtus.git'
 gem 'imperator'
-gem 'focused_controller', :git => 'git://github.com/kristianmandrup/focused_controller.git'
 
 group :development do
   gem "rspec",    ">= 2.8.0"
