@@ -21,11 +21,11 @@ class Imperator::Command
       # Imperator::Command::ClassFactory.create :update, Post, parent: Imperator::Mongoid::Command do
       #   ..
       # end
-      def create action, model, options = {}, &block
+      def build_command action, model, options = {}, &block
         clazz_name = "#{action.to_s.camelize}#{model.to_s.camelize}Command"
-        parent ||= options[:parent] || get_default_parent
+        parent = options[:parent] || get_default_parent
         clazz = parent ? Class.new(parent) : Class.new
-        Kernel.const_set clazz_name, clazz
+        Object.const_set clazz_name, clazz
         clazz = self.const_get(clazz_name)
         clazz.class_eval do
           attributes_for(model, :except => options[:except]) if options[:auto_attributes]
@@ -39,12 +39,13 @@ class Imperator::Command
       # Imperator::Command::ClassFactory.create_rest :all, Post, parent: Imperator::Mongoid::Command do
       #   ..
       # end
-      def create_rest action, model, options = {}, &block
+      def rest_command action, model, options = {}, &block
         options.reverse_merge! default_options
-        parent = options[:parent] || default_rest_class
-        create_rest_all(model, options = {}, &block) and return if action.to_sym == :all
+        options[:parent] ||= default_rest_class
+        rest_commands_for(model, options, &block) and return if action.to_sym == :all
         if rest_actions.include? action.to_sym        
-          send "create_rest_#{action}", model, options, &block
+          action_name = "#{action}_command_for"
+          send action_name, model, options, &block
         else
           raise ArgumentError, "Not a supported REST action. Must be one of #{rest_actions}, was #{action}"
         end
@@ -54,6 +55,10 @@ class Imperator::Command
 
       def default_rest_class
         @default_rest_class ||= Imperator::Command::Rest
+      end
+
+      def reset_rest_class
+        @default_rest_class = Imperator::Command::Rest
       end
 
       attr_writer :default_options
@@ -66,33 +71,36 @@ class Imperator::Command
       protected
 
       def rest_actions
-        [:new, :update, :delete]
+        [:create, :update, :delete]
       end
 
-      def create_rest_new model, options = {}, &block
-        create :update, model, options do
-          update
-          yield
+      def create_command_for model, options = {}, &block
+        options[:parent] ||= default_rest_class
+        build_command :create, model, options do
+          create_action
+          instance_eval &block if block_given?
         end
       end
 
-      def create_rest_update model, options = {}, &block
-        create :update, model, options do          
-          update
-          yield
+      def update_command_for model, options = {}, &block
+        options[:parent] ||= default_rest_class
+        build_command :update, model, options do          
+          update_action
+          instance_eval &block if block_given?
         end
       end
 
-      def create_rest_delete model, options = {}, &block
-        create :delete, model, options do          
-          delete
-          yield
+      def delete_command_for model, options = {}, &block
+        options[:parent] ||= default_rest_class
+        build_command :delete, model, options do          
+          delete_action
+          instance_eval &block if block_given?
         end
       end
 
-      def create_rest_all model, options = {}, &block
+      def rest_commands_for model, options = {}, &block
         rest_actions.each do |action| 
-          send "create_rest_#{action}", model, options, &block
+          send "#{action}_command_for", model, options, &block
         end
       end
     end

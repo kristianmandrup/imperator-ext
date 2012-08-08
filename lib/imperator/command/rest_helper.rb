@@ -2,13 +2,17 @@ class Imperator::ResourceNotFoundError < StandardError; end
 
 class Imperator::Command
   module RestHelper
-    class << self
-      attr_writer :object_class
+    extend ActiveSupport::Concern
 
+    included do
+      attr_writer :object_class
+    end      
+
+    module ClassMethods
       def create_action &block
         action do    
           object_class.create attribute_set if object_class
-          yield
+          instance_eval &block if block_given?
         end    
       end
 
@@ -16,7 +20,7 @@ class Imperator::Command
         action do
           begin  
             find_object.update_attributes attribute_set if find_object
-            yield
+            instance_eval &block if block_given?
           rescue Imperator::ResourceNotFoundError => e
             on_error e
           end
@@ -26,7 +30,7 @@ class Imperator::Command
       def delete_action &block
         action do    
           find_object.delete
-          yield
+          instance_eval &block if block_given?
         end    
       end
 
