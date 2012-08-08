@@ -3,4 +3,4 @@ module Imperator
   end
 end
 
-require 'imperator/mongoid/rest_command'
+require 'imperator/mongoid/command/rest'

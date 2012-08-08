@@ -3,6 +3,10 @@ source :rubygems
 gem 'virtus', :git => 'git://github.com/kristianmandrup/virtus.git'
 gem 'imperator'
 
+group :test do
+  gem 'mongoid', '~> 3.0'
+end
+
 group :development do
   gem "rspec",    ">= 2.8.0"
   gem "rdoc",     ">= 3.12"

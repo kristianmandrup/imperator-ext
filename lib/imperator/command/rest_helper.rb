@@ -13,11 +13,13 @@ class Imperator::Command
       end
 
       def update_action &block
-        action do    
-          find_object.update_attributes attribute_set if find_object
-          yield
-          rescue e: Imperator::ResourceNotFoundError
+        action do
+          begin  
+            find_object.update_attributes attribute_set if find_object
+            yield
+          rescue Imperator::ResourceNotFoundError => e
             on_error e
+          end
         end    
       end
 

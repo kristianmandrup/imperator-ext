@@ -1,4 +1,5 @@
 require 'rspec'
+require 'mongoid'
 require 'imperator-ext'
 
 # Requires supporting files with custom matchers and macros, etc,

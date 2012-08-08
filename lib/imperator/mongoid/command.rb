@@ -16,6 +16,6 @@ require 'imperator/mongoid/attribute_helper'
 
 module Imperator::Mongoid
   class Command < Imperator::Command
-    include Imperator::Mongoid::AttriubuteHelper
+    include Imperator::Mongoid::AttributeHelper
   end
 end
