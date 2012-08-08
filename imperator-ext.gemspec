@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = "imperator-ext"
-  s.version = "0.1.0"
+  s.version = "0.1.1"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Kristian Mandrup"]
-  s.date = "2012-08-05"
+  s.date = "2012-08-08"
   s.description = "Factories, Macros, REST helpers and Mongoid integration"
   s.email = "kmandrup@gmail.com"
   s.extra_rdoc_files = [
@@ -26,6 +26,7 @@ Gem::Specification.new do |s|
     "Rakefile",
     "VERSION",
     "docs/Design.md",
+    "imperator-ext.gemspec",
     "lib/imperator-ext.rb",
     "lib/imperator/command-ext.rb",
     "lib/imperator/command/class_factory.rb",
@@ -45,6 +46,9 @@ Gem::Specification.new do |s|
     "spec/imperator-ext/command/rest_spec.rb",
     "spec/imperator-ext/mongoid/command_spec.rb",
     "spec/imperator-ext/mongoid/rest_command_spec.rb",
+    "spec/imperator-ext/shared_ex/attribute_helper_ex.rb",
+    "spec/imperator-ext/shared_ex/command_ex.rb",
+    "spec/imperator-ext/shared_ex/rest_helper_ex.rb",
     "spec/spec_helper.rb"
   ]
   s.homepage = "http://github.com/kristianmandrup/imperator-ext"
