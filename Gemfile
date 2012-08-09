@@ -1,7 +1,7 @@
 source :rubygems
 
-gem 'virtus', :git => 'git://github.com/kristianmandrup/virtus.git'
-gem 'imperator'
+gem 'virtus',    :git => 'git://github.com/kristianmandrup/virtus.git'
+gem 'imperator' #, :git => 'git://github.com/kristianmandrup/imperator.git'
 
 group :test do
   gem 'mongoid', '~> 3.0'

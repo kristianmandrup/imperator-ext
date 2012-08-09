@@ -1,19 +1,24 @@
 module Imperator
   module Mongoid
     module AttributeHelper
-      include ActiveSupport::Concern
+      extend ActiveSupport::Concern
 
-      module ClassMethods
+      module ClassMethods        
         def attributes_for clazz, options = {}
-          use_attributes = clazz.attribute_names - options[:except].map(&:to_s)
+          use_attributes = clazz.attribute_names
 
+          unless options[:except].blank?
+            use_attributes = use_attributes - [options[:except]].flatten.map(&:to_s)
+          end
           unless options[:only].blank?
-            use_attributes = use_attributes & options[:only].map(&:to_s) # intersection
+            use_attributes = use_attributes & [options[:only]].flatten.map(&:to_s) # intersection
           end
 
-          clazz.fields.each do |field|
+          clazz.fields.each do |key, field|
+            name = key
+            type = field.type
             # skip if this field is excluded for use in command
-            continue if use_attributes.include? field.name.to_s
+            next unless use_attributes.include? name.to_s
             
             attribute field.name, field.type, :default => field.default_val
           end

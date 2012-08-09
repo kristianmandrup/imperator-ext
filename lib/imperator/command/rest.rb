@@ -1,4 +1,4 @@
-require 'imperator/command/rest'
+require 'imperator/command/rest_helper'
 
 class Imperator::Command
   class Rest < Imperator::Command

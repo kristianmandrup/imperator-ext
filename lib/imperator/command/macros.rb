@@ -4,10 +4,10 @@ def imperator_class_factory
   Imperator::Command::ClassFactory
 end
 
-def create_command action, model, options = {}, &block
-  imperator_class_factory.create action, model, options = {}, &block
+def build_command action, model, options = {}, &block
+  imperator_class_factory.build_command action, model, options = {}, &block
 end
 
-def create_rest_command action, model, options = {}, &block
-  imperator_class_factory.create_rest action, model, options = {}, &block
+def build_rest_command action, model, options = {}, &block
+  imperator_class_factory.rest_command action, model, options = {}, &block
 end

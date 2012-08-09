@@ -1,6 +1,6 @@
 GIT
   remote: git://github.com/kristianmandrup/virtus.git
-  revision: 9ca622f9ec3924665a0134c70f239d676b056ae9
+  revision: 4b0d2cb9c5ec937b940dad0048fb7396f0e05466
   specs:
     virtus (0.5.1)
       backports (~> 2.6.1)
