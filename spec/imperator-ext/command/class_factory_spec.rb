@@ -2,6 +2,10 @@ require 'spec_helper'
 
 class UpdateRestCommand < Imperator::Command::Rest
 end
+class CreateRestCommand < Imperator::Command::Rest
+end
+class DeleteRestCommand < Imperator::Command::Rest
+end
 
 class Post
 end
@@ -18,9 +22,68 @@ end
 class Foo
 end
 
-class UpdatePostCommand < Imperator::Command::Rest
+class Payment
 end
 
+describe Imperator::Command::ClassFactory do
+  subject { Imperator::Command::ClassFactory }
+
+  describe '.rest_command' do
+    context 'update' do
+      before :all do
+        subject.default_rest_class = Imperator::Command::Rest
+        subject.rest_command :update, Article, :parent => UpdateRestCommand, :auto_attributes => true do
+          def hello
+            "hello"
+          end
+        end
+      end
+
+      context 'UpdateArticleCommand created' do
+        let(:command) { UpdateArticleCommand.new }
+
+        specify { UpdateArticleCommand.superclass.should == UpdateRestCommand }
+        specify { command.hello.should == "hello" }
+      end
+    end 
+
+    context 'create' do
+      before :all do
+        subject.default_rest_class = Imperator::Command::Rest
+        subject.rest_command :create, Article, :parent => CreateRestCommand, :auto_attributes => true do
+          def hello
+            "hello"
+          end
+        end
+      end
+
+      context 'CreateArticleCommand created' do
+        let(:command) { CreateArticleCommand.new }
+
+        specify { CreateArticleCommand.superclass.should == CreateRestCommand }
+        specify { command.hello.should == "hello" }
+      end
+    end 
+
+    context 'delete' do
+      before :all do
+        subject.default_rest_class = Imperator::Command::Rest
+        subject.rest_command :delete, Article, :parent => DeleteRestCommand, :auto_attributes => true do
+          def hello
+            "hello"
+          end
+        end
+      end
+
+      context 'DeleteArticleCommand created' do
+        let(:command) { DeleteArticleCommand.new }
+
+        specify { DeleteArticleCommand.superclass.should == DeleteRestCommand }
+        specify { command.hello.should == "hello" }
+      end
+    end 
+  end
+end
 
 describe Imperator::Command::ClassFactory do
 
@@ -37,10 +100,10 @@ describe Imperator::Command::ClassFactory do
 
   describe '.rest_command' do
     before :all do
-      subject.rest_command :update, Post
+      subject.rest_command :update, Payment
     end
 
-    specify { UpdatePostCommand.superclass.should == Imperator::Command::Rest }
+    specify { UpdatePaymentCommand.superclass.should == Imperator::Command::Rest }
 
     describe ':all' do
       before :all do
@@ -63,16 +126,7 @@ describe Imperator::Command::ClassFactory do
         subject.default_rest_class = UpdateRestCommand
       end
 
-      its(:default_rest_class) { should == UpdateRestCommand }
-
-      describe '.rest_command' do
-        before :all do
-          subject.default_rest_class = UpdateRestCommand
-          subject.rest_command :update, Article
-        end
-
-        specify { UpdateArticleCommand.superclass.should == UpdateRestCommand }
-      end      
+      its(:default_rest_class) { should == UpdateRestCommand }     
     end
   end
 

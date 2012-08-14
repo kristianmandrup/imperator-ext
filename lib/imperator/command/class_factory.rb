@@ -14,7 +14,7 @@ class Imperator::Command
       end
 
       def get_default_parent
-        @default_default_parent ||= ::Imperator::Command
+        @default_parent ||= ::Imperator::Command
       end
 
       # Usage:
@@ -27,12 +27,17 @@ class Imperator::Command
         clazz = parent ? Class.new(parent) : Class.new
         Object.const_set clazz_name, clazz
         clazz = self.const_get(clazz_name)
-        clazz.class_eval do
-          attributes_for(model, :except => options[:except]) if options[:auto_attributes]
+        if options[:auto_attributes]
+          clazz.instance_eval do
+            if respond_to? :attributes_for
+              attributes_for(model, :except => options[:except], :only => options[:only]) 
+            end
+          end
         end
         if block_given?
-          clazz.class_eval &block      
+          clazz.instance_eval &block      
         end
+        clazz
       end
 
       # Usage:
@@ -41,7 +46,7 @@ class Imperator::Command
       # end
       def rest_command action, model, options = {}, &block
         options.reverse_merge! default_options
-        options[:parent] ||= default_rest_class
+        options[:parent] ||= get_default_rest_class(model)
         rest_commands_for(model, options, &block) and return if action.to_sym == :all
         if rest_actions.include? action.to_sym        
           action_name = "#{action}_command_for"
@@ -53,8 +58,16 @@ class Imperator::Command
 
       attr_writer :default_rest_class
 
+      def get_default_rest_class model
+        model.ancestors.include?(Mongoid::Document) ? default_mongoid_rest_class : default_rest_class
+      end
+
       def default_rest_class
         @default_rest_class ||= Imperator::Command::Rest
+      end
+
+      def default_mongoid_rest_class
+        @default_mongoid_rest_class ||= Imperator::Mongoid::Command::Rest
       end
 
       def reset_rest_class
@@ -76,26 +89,26 @@ class Imperator::Command
 
       def create_command_for model, options = {}, &block
         options[:parent] ||= default_rest_class
-        build_command :create, model, options do
+        c = build_command :create, model, options do
           create_action
-          instance_eval &block if block_given?
         end
+        c.class_eval &block if block_given?
       end
 
       def update_command_for model, options = {}, &block
         options[:parent] ||= default_rest_class
-        build_command :update, model, options do          
-          update_action
-          instance_eval &block if block_given?
+        c = build_command :update, model, options do          
+          update_action          
         end
+        c.class_eval &block if block_given?
       end
 
       def delete_command_for model, options = {}, &block
         options[:parent] ||= default_rest_class
-        build_command :delete, model, options do          
+        c = build_command :delete, model, options do          
           delete_action
-          instance_eval &block if block_given?
         end
+        c.class_eval &block if block_given?
       end
 
       def rest_commands_for model, options = {}, &block

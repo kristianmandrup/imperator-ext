@@ -6,7 +6,7 @@ The current integrations are for:
 
 * [mongoid](https://github.com/mongoid/mongoid)
 
-The gem is designed to simplify designing commands for REST actions and also includes some useful macros.
+The gem is designed to simplify designing commands for REST actions and includes some useful macros to facilitate common patterns.
 
 ## Mongoid imperator
 
@@ -166,6 +166,37 @@ module ServicesController
   end
 end
 ```
+
+Often you will want commands namespace scoped however. This is supported via the `:ns` option.
+
+```ruby
+module ServicesController
+
+  class SignIn < Action
+    include Imperator::Command::MethodFactory
+
+    def run
+      sign_in.perform
+    end
+
+    command_method :sign_in, ns: self.parent
+  end
+end
+```
+
+Creates a `#sign_in_command` with namespaced scoping:
+
+```ruby
+module ServicesController
+  class SignIn < Action
+    def sign_in_command
+      @sign_in_command ||= Services::SignInCommand.new initiator: self
+    end
+  end
+end
+```
+
+This is the recommended pattern for linking Focused Controller actions to Imperator commands.
 
 ## Rest Commands
 
