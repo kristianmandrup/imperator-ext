@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = "imperator-ext"
-  s.version = "0.1.1"
+  s.version = "0.2.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Kristian Mandrup"]
-  s.date = "2012-08-08"
+  s.date = "2012-08-14"
   s.description = "Factories, Macros, REST helpers and Mongoid integration"
   s.email = "kmandrup@gmail.com"
   s.extra_rdoc_files = [
