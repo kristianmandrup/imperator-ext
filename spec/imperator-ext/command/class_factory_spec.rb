@@ -25,13 +25,16 @@ end
 class Payment
 end
 
+class Property
+end
+
 describe Imperator::Command::ClassFactory do
   subject { Imperator::Command::ClassFactory }
 
   describe '.rest_command' do
     context 'update' do
       before :all do
-        subject.default_rest_class = Imperator::Command::Rest
+        subject.set_default_rest_class Imperator::Command::Rest
         subject.rest_command :update, Article, :parent => UpdateRestCommand, :auto_attributes => true do
           def hello
             "hello"
@@ -49,7 +52,7 @@ describe Imperator::Command::ClassFactory do
 
     context 'create' do
       before :all do
-        subject.default_rest_class = Imperator::Command::Rest
+        subject.set_default_rest_class Imperator::Command::Rest
         subject.rest_command :create, Article, :parent => CreateRestCommand, :auto_attributes => true do
           def hello
             "hello"
@@ -67,7 +70,7 @@ describe Imperator::Command::ClassFactory do
 
     context 'delete' do
       before :all do
-        subject.default_rest_class = Imperator::Command::Rest
+        subject.set_default_rest_class Imperator::Command::Rest
         subject.rest_command :delete, Article, :parent => DeleteRestCommand, :auto_attributes => true do
           def hello
             "hello"
@@ -94,7 +97,7 @@ describe Imperator::Command::ClassFactory do
       subject.build_command :show, Post
     end    
 
-    its(:get_default_parent) { should == Imperator::Command }
+    its(:default_class) { should == Imperator::Command }
     specify { ShowPostCommand.superclass.should == Imperator::Command }
   end
 
@@ -116,14 +119,14 @@ describe Imperator::Command::ClassFactory do
     end
   end
 
-  describe '.default_rest_class' do
+  describe '.set_default_rest_class' do
     describe 'default class' do
       its(:default_rest_class) { should == Imperator::Command::Rest }
     end
 
-    describe 'set default_rest_class to UpdateRestCommand' do
+    describe 'set_default_rest_class to UpdateRestCommand' do
       before :all do
-        subject.default_rest_class = UpdateRestCommand
+        subject.set_default_rest_class UpdateRestCommand
       end
 
       its(:default_rest_class) { should == UpdateRestCommand }     
@@ -146,7 +149,7 @@ describe 'private methods' do
     describe 'rest command builders' do
       describe '.create_command_for' do
         before do
-          subject.reset_rest_class
+          subject.reset_rest!
           subject.send :create_command_for, Post
         end
 
@@ -155,7 +158,7 @@ describe 'private methods' do
 
       describe '.update_command_for' do
         before do
-          subject.default_rest_class = UpdateRestCommand
+          subject.set_default_rest_class UpdateRestCommand
           subject.send :update_command_for, Account
         end
 
@@ -164,7 +167,7 @@ describe 'private methods' do
 
       describe '.delete_command_for' do
         before do
-          subject.reset_rest_class
+          subject.reset!
           subject.send :delete_command_for, Account
         end
 
@@ -184,3 +187,52 @@ describe 'private methods' do
   end
 end
 
+class MySubFactory < Imperator::Command::ClassFactory
+  def self.initial_rest_class
+    @initial_rest_class ||= UpdateRestCommand
+  end
+
+  def initialize
+    @default_options = {:hello => 'you'}
+  end
+end
+
+describe 'subclass' do
+  describe MySubFactory do
+    subject { MySubFactory }
+
+    describe 'new initial_rest_class' do
+      its(:initial_rest_class) { should == UpdateRestCommand }
+    end
+  end
+end
+
+describe 'instance' do
+  describe MySubFactory do
+    subject { MySubFactory.instance }
+
+    describe 'new default_options' do
+      its(:default_options) {should == {:hello => 'you'} }
+    end
+
+    describe '.rest_command' do
+      context 'update' do
+        before :all do
+          subject.set_default_rest_class Imperator::Command::Rest
+          subject.rest_command :update, Property, :parent => UpdateRestCommand, :auto_attributes => true do
+            def hello
+              "hello"
+            end
+          end
+        end
+
+        context 'UpdatePropertyCommand created' do
+          let(:command) { UpdatePropertyCommand.new }
+
+          specify { UpdatePropertyCommand.superclass.should == UpdateRestCommand }
+          specify { command.hello.should == "hello" }
+        end
+      end 
+    end    
+  end
+end

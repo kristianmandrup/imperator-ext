@@ -4,17 +4,57 @@ require 'imperator/command/rest'
 class Imperator::Command
   # http://johnragan.wordpress.com/2010/02/18/ruby-metaprogramming-dynamically-defining-classes-and-methods/
   class ClassFactory
-    class << self
+    include Singleton
+
+    module ClassMethods
       def use &block
         yield self
       end
+    end
 
-      def default_parent clazz
-        @default_parent ||= clazz
+    module Methods
+      attr_writer   :default_class, :initial_rest_classes, :initial_rest_class
+      attr_accessor :default_rest_classes
+
+      def initial_rest_classes
+        @initial_rest_classes ||= {:mongoid => Imperator::Mongoid::Command::Rest}
       end
 
-      def get_default_parent
-        @default_parent ||= ::Imperator::Command
+      def default_class
+        @default_class ||= ::Imperator::Command
+      end      
+
+      def default_rest_class model = nil
+        return initial_rest_class unless model
+        return default_rest_classes[:mongoid] if model.ancestors.include?(Mongoid::Document)        
+      end
+
+      def initial_rest_class
+        @initial_rest_class ||= Imperator::Command::Rest
+      end
+
+      def set_default_rest_class model, type = nil
+        unless type.nil?
+          @default_rest_classes[type.to_sym] = model
+          return
+        end
+        @initial_rest_class = model        
+      end
+
+      def reset_rest!
+        @default_rest_classes = initial_rest_classes
+        @initial_rest_class = Imperator::Command::Rest
+      end
+
+      def reset!
+        reset_rest!
+        default_class = ::Imperator::Command
+      end
+
+      attr_writer :default_options
+
+      def default_options
+        @default_options ||= {}
       end
 
       # Usage:
@@ -23,10 +63,11 @@ class Imperator::Command
       # end
       def build_command action, model, options = {}, &block
         clazz_name = "#{action.to_s.camelize}#{model.to_s.camelize}Command"
-        parent = options[:parent] || get_default_parent
+        parent = options[:parent] || default_class
         clazz = parent ? Class.new(parent) : Class.new
         Object.const_set clazz_name, clazz
-        clazz = self.const_get(clazz_name)
+        context = self.kind_of?(Class) ? self : self.class
+        clazz = context.const_get(clazz_name)
         if options[:auto_attributes]
           clazz.instance_eval do
             if respond_to? :attributes_for
@@ -46,7 +87,7 @@ class Imperator::Command
       # end
       def rest_command action, model, options = {}, &block
         options.reverse_merge! default_options
-        options[:parent] ||= get_default_rest_class(model)
+        options[:parent] ||= default_rest_class(model)
         rest_commands_for(model, options, &block) and return if action.to_sym == :all
         if rest_actions.include? action.to_sym        
           action_name = "#{action}_command_for"
@@ -54,30 +95,6 @@ class Imperator::Command
         else
           raise ArgumentError, "Not a supported REST action. Must be one of #{rest_actions}, was #{action}"
         end
-      end
-
-      attr_writer :default_rest_class
-
-      def get_default_rest_class model
-        model.ancestors.include?(Mongoid::Document) ? default_mongoid_rest_class : default_rest_class
-      end
-
-      def default_rest_class
-        @default_rest_class ||= Imperator::Command::Rest
-      end
-
-      def default_mongoid_rest_class
-        @default_mongoid_rest_class ||= Imperator::Mongoid::Command::Rest
-      end
-
-      def reset_rest_class
-        @default_rest_class = Imperator::Command::Rest
-      end
-
-      attr_writer :default_options
-
-      def default_options
-        @default_options ||= {}
       end
 
 
@@ -117,5 +134,10 @@ class Imperator::Command
         end
       end
     end
+
+    extend Methods
+    extend ClassMethods
+
+    include Methods
   end
 end

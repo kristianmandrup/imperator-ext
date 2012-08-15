@@ -89,7 +89,7 @@ require 'imperator/command/macros'
 
 imperator_command_factory.use do |factory|
   # put common/shared logic in this REST base class
-  factory.default_rest_class = Imperator::Mongoid::Command::Rest
+  factory.set_default_rest_class Imperator::Mongoid::Command::Rest, :mongoid
 
   factory.create_rest :all, Post do
     on_error do
@@ -122,17 +122,30 @@ If you include the macros, the following macros are exposed:
 * `#create_rest_command`
 * `#imperator_class_factory
 
+The CommandFactory can be used standalone, by subclassing or even by instance as the example below illustrates! (see specs for details)
+
 Usage example:
 
 ```ruby
-# ensure all attributes of model are reflected in Command (if adaptor makes it possible)
-Imperator::Command::ClassFactory.default_options = {auto_attributes: true}
+class AutoCommandFactory < Imperator::Command::ClassFactory
+  def initialize
+    # if Model adaptor makes it possible
+    # - ensure all attributes of model are reflected in Command
+    @default_options = {auto_attributes: true}
+  end
+end
 
 module PostController
   class Update < Action
 
     command do
-      @command ||= create_rest_command(:update, Post).new object_hash
+      @command ||= command_factory.create_rest_command(:update, Post).new object_hash
+    end
+
+    protected
+
+    def command_factory
+      AutoCommandFactory.instance
     end
   end
 end
