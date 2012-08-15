@@ -139,14 +139,17 @@ end
 ```
 ## Command Method Factory
 
-By including the `Imperator::Command::MethodFactory` you get access to the `#command_method` macro, which lets you easily define Imperator Command methods.
-This is typically used in a Controller.
+By including the `Imperator::Command::MethodFactory` you get access to the `#command_method`and `#command_methods` macros, which let you easily define Imperator Command methods.
+These macros are typically used in a Controller like in the example below.
+Note: The options passed in will be used to initialize the command
 
 ```ruby
 class ServicesController
   include Imperator::Command::MethodFactory
 
-  command_method :sign_in
+  command_method  :pay, service: 'paypal'
+
+  command_methods :sign_in, :sign_out
 end
 ```
 

@@ -7,6 +7,9 @@ end
 class UpdateCommand < Imperator::Command
 end
 
+class ShowCommand < Imperator::Command
+end
+
 module Landlord
   module Account
     class PayCommand < Imperator::Command
@@ -46,6 +49,26 @@ describe Imperator::Command::MethodFactory do
     end
 
     its(:update_command) { should be_a(Imperator::Command) }
+  end
+
+  describe '.command_methods' do
+    describe 'with name args' do
+      before do
+        clazz.command_methods :update, :show
+      end    
+
+      its(:update_command) { should be_a(Imperator::Command) }
+      its(:show_command) { should be_a(Imperator::Command) }
+    end
+
+    describe 'with names and options' do
+      before do
+        clazz.command_methods :update, :show, id: 7
+      end    
+
+      its(:update_command) { should be_a(Imperator::Command) }
+      its(:show_command) { should be_a(Imperator::Command) }
+    end
   end
 
   describe 'with namespace :ns option' do

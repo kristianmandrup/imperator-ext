@@ -12,6 +12,11 @@ class Imperator::Command
       end
     end
 
+    def command_methods *args
+      options = args.extract_options!
+      args.flatten.each { |meth| command_method meth, options }
+    end    
+
     extend self
   end
 end
