@@ -149,7 +149,17 @@ class ServicesController
 
   command_method  :pay, service: 'paypal'
 
+  command_method (:ship_product, service: 'fedex') do
+    {id: get_id } # late evaled option args (Hash) for command constructor!
+  end
+
   command_methods :sign_in, :sign_out
+
+  protected
+
+  def get_id
+    params[:id]
+  end
 end
 ```
 

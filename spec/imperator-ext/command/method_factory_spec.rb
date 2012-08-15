@@ -25,7 +25,13 @@ module Landlord
     class Pay < Action # imperator action
       extend Imperator::Command::MethodFactory
 
-      command_method :pay, object: 'hello', ns: self.parent    
+      command_method :pay, object: 'hello', ns: self.parent do
+        {id: id}
+      end
+
+      def id
+        'my id'
+      end
     end    
   end
 end
