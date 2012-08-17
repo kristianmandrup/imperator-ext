@@ -1,0 +1,13 @@
+class <%= class_name %>Command < <%= parent_class %>
+  # attributes :a, :b
+  # attribute :c, Integer
+
+  # validates_presence_of :c
+
+  action do
+    # ...
+  end
+
+  protected
+
+end

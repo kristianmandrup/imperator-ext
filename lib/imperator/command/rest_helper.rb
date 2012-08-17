@@ -34,6 +34,10 @@ class Imperator::Command
         end    
       end
 
+      def rest_action name, &block
+        send("#{name}_action", &block) if supported_rest_actions.include? name.to_sym
+      end
+
       def on_error &block
         define_method(:on_error, &block)
       end
@@ -47,6 +51,10 @@ class Imperator::Command
       end
 
       protected
+
+      def supported_rest_actions
+        [:create, :update, :delete]
+      end
 
       # convert to underscore format, fx UpdatePostCommand becomes update_post_command
       # remove 'create', 'update' or 'delete' in the front of name: _post_command

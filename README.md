@@ -43,7 +43,7 @@ class UpdatePostCommand < Imperator::Command::Rest
 
   validates_presence_of :some_object_id
 
-  update do
+  update_action do
     puts "updated OK"
   end
 end
@@ -60,7 +60,7 @@ class UpdatePostCommand < Imperator::Mongoid::Command::Rest
 
   validates :name, presence: true
 
-  update do    
+  update_action do    
     puts "#{object} was updated"
   end
 
@@ -226,13 +226,13 @@ This is the recommended pattern for linking Focused Controller actions to Impera
 
 ## Rest Commands
 
-The class `Imperator::Command::Rest` can be used as a base class for REST CUD commands (Create, Update, Delete). This class includes the module `Imperator::Command::RestHelper` which includes a number of useful methods for defining typical REST action behavior for an Imperator Command.
+The class `Imperator::Command::Rest` can be used as a base class for REST CUD commands (Create, Update, Delete). This class includes the module `Imperator::Command::RestHelper` which includes a number of useful methods for defining typical REST action behavior for an Imperator Command. You can also use the `#rest_action name` macro, as demonstrated here.
 
 Usage example:
 
 ```ruby
 class UpdatePostCommand < Imperator::Command::Rest
-  update_action do
+  rest_action :update do
     notify :updated
   end
 end
@@ -344,6 +344,47 @@ module PostController
         c.complete_it!
       end
     end
+  end
+end
+```
+
+## Namespacing convenience
+
+You can also place your commands directly under the Commands namespace. 
+In this case you can do the following:
+
+``ruby
+module Commands
+  class SignInCommand < Command # or MongoidCommand
+    # ...
+  end
+end
+```
+
+## Rails generators
+
+A simple `imperator:command` generator is included:
+
+`$ rails g imperator:command sign_in`
+
+* Will create an `app/commands` folder with your commands (if not present)
+* Will create a `SignInCommand` class inheriting from `::Imperator::Command
+* class will be put in `app/commands/sign_in_command.rb`
+
+`$ rails g imperator:command sign_in --orm mongoid`
+
+Namespacing:
+
+`$ rails g imperator:command tenant::session::sign_in`
+
+* Will create a `Tenant::Session::SignInCommand` class in `app/commands/tenant/session/sign_in_command.rb`
+
+In this case you have to define/open the Tenant::Session namespace structure elsewhere.
+Fx: `app/commands/tenant/session.rb`
+
+```ruby
+class Tenant < User
+  module Session
   end
 end
 ```

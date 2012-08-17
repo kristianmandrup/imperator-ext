@@ -111,7 +111,7 @@ class UpdatePostCommand < Imperator::Command::Restfull
 
   validates_presence_of :some_object_id
 
-  update do
+  update_action do
     puts "updated OK"
   end
 end
@@ -128,7 +128,7 @@ class UpdatePostCommand < Imperator::Mongoid::RestCommand
 
   validates :name, presence: true
 
-  update do    
+  update_action do    
     puts "#{object} was updated"
   end
 
