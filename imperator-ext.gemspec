@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = "imperator-ext"
-  s.version = "0.2.2"
+  s.version = "0.2.3"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Kristian Mandrup"]
-  s.date = "2012-08-15"
+  s.date = "2012-08-17"
   s.description = "Factories, Macros, REST helpers and Mongoid integration"
   s.email = "kmandrup@gmail.com"
   s.extra_rdoc_files = [
@@ -27,6 +27,8 @@ Gem::Specification.new do |s|
     "VERSION",
     "docs/Design.md",
     "imperator-ext.gemspec",
+    "lib/generators/imperator/command_generator.rb",
+    "lib/generators/imperator/templates/command.tt",
     "lib/imperator-ext.rb",
     "lib/imperator/command-ext.rb",
     "lib/imperator/command/class_factory.rb",
@@ -39,6 +41,7 @@ Gem::Specification.new do |s|
     "lib/imperator/mongoid/attribute_helper.rb",
     "lib/imperator/mongoid/command.rb",
     "lib/imperator/mongoid/command/rest.rb",
+    "lib/imperator/rails/engine.rb",
     "spec/imperator-ext/command/class_factory_spec.rb",
     "spec/imperator-ext/command/macros_spec.rb",
     "spec/imperator-ext/command/method_factory_spec.rb",
