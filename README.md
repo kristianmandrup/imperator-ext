@@ -8,6 +8,10 @@ The current integrations are for:
 
 The gem is designed to simplify designing commands for REST actions and includes some useful macros to facilitate common patterns.
 
+### Gothas!
+
+If you get an error that `Imperator:Mongoid` isn't defined, it is because you need to include the `mongoid` gem before this gem so that Mongoid is defined and 'imperator/mongoid' will only then be loaded (required) ;)
+
 ## Mongoid imperator
 
 The Mongoid integration provides the class method `#attributes_for`, 
