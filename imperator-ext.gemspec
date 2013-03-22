@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = "imperator-ext"
-  s.version = "0.2.3"
+  s.version = "0.2.4"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Kristian Mandrup"]
-  s.date = "2012-08-17"
+  s.date = "2013-03-22"
   s.description = "Factories, Macros, REST helpers and Mongoid integration"
   s.email = "kmandrup@gmail.com"
   s.extra_rdoc_files = [
@@ -19,6 +19,7 @@ Gem::Specification.new do |s|
   s.files = [
     ".document",
     ".rspec",
+    ".rvmrc",
     "Gemfile",
     "Gemfile.lock",
     "LICENSE.txt",
@@ -57,7 +58,7 @@ Gem::Specification.new do |s|
   s.homepage = "http://github.com/kristianmandrup/imperator-ext"
   s.licenses = ["MIT"]
   s.require_paths = ["lib"]
-  s.rubygems_version = "1.8.24"
+  s.rubygems_version = "1.8.25"
   s.summary = "Various extensions for Imperator"
 
   if s.respond_to? :specification_version then
@@ -66,27 +67,27 @@ Gem::Specification.new do |s|
     if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then
       s.add_runtime_dependency(%q<virtus>, [">= 0"])
       s.add_runtime_dependency(%q<imperator>, [">= 0"])
-      s.add_development_dependency(%q<rspec>, [">= 2.8.0"])
+      s.add_development_dependency(%q<rspec>, [">= 2.12"])
       s.add_development_dependency(%q<rdoc>, [">= 3.12"])
-      s.add_development_dependency(%q<bundler>, [">= 1.0.0"])
-      s.add_development_dependency(%q<jeweler>, ["~> 1.8.4"])
+      s.add_development_dependency(%q<bundler>, [">= 1.1.0"])
+      s.add_development_dependency(%q<jeweler>, [">= 1.8.4"])
       s.add_development_dependency(%q<simplecov>, [">= 0.5"])
     else
       s.add_dependency(%q<virtus>, [">= 0"])
       s.add_dependency(%q<imperator>, [">= 0"])
-      s.add_dependency(%q<rspec>, [">= 2.8.0"])
+      s.add_dependency(%q<rspec>, [">= 2.12"])
       s.add_dependency(%q<rdoc>, [">= 3.12"])
-      s.add_dependency(%q<bundler>, [">= 1.0.0"])
-      s.add_dependency(%q<jeweler>, ["~> 1.8.4"])
+      s.add_dependency(%q<bundler>, [">= 1.1.0"])
+      s.add_dependency(%q<jeweler>, [">= 1.8.4"])
       s.add_dependency(%q<simplecov>, [">= 0.5"])
     end
   else
     s.add_dependency(%q<virtus>, [">= 0"])
     s.add_dependency(%q<imperator>, [">= 0"])
-    s.add_dependency(%q<rspec>, [">= 2.8.0"])
+    s.add_dependency(%q<rspec>, [">= 2.12"])
     s.add_dependency(%q<rdoc>, [">= 3.12"])
-    s.add_dependency(%q<bundler>, [">= 1.0.0"])
-    s.add_dependency(%q<jeweler>, ["~> 1.8.4"])
+    s.add_dependency(%q<bundler>, [">= 1.1.0"])
+    s.add_dependency(%q<jeweler>, [">= 1.8.4"])
     s.add_dependency(%q<simplecov>, [">= 0.5"])
   end
 end
